@@ -33,7 +33,7 @@ canvas.addEventListener("click", (e) => {
 
   points.push({ x, y });
 
-  draw(); // 👈 EVERYTHING redraws here cleanly
+  draw();
 });
 
 function draw() {
@@ -51,7 +51,6 @@ function draw() {
     ctx.fill();
   }
 
-  // Draw curve + score if enough points
   if (points.length >= 3) {
 
     let sorted = [...points].sort((a, b) => a.x - b.x);
@@ -71,7 +70,6 @@ function draw() {
     let b = (x3*x3*(y1 - y2) + x2*x2*(y3 - y1) + x1*x1*(y2 - y3)) / denom;
     let c = (x2*x3*(x2 - x3)*y1 + x3*x1*(x3 - x1)*y2 + x1*x2*(x1 - x2)*y3) / denom;
 
-    // Draw curve
     ctx.strokeStyle = "blue";
     ctx.lineWidth = 2;
     ctx.beginPath();
@@ -81,7 +79,6 @@ function draw() {
     for (let x = 0; x < canvas.width; x++) {
       let y = a * x * x + b * x + c;
 
-      // Only draw if on screen
       if (y >= 0 && y <= canvas.height) {
         if (!started) {
           ctx.moveTo(x, y);
@@ -94,7 +91,6 @@ function draw() {
 
     ctx.stroke();
 
-    // Calculate score
     let totalDeviation = 0;
 
     for (let p of sorted) {
