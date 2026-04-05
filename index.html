@@ -1,43 +1,45 @@
+<h1>Orthodontic Progress Tracker</h1>
+<input type="file" id="upload">
+<canvas id="canvas"></canvas>
+<p id="score">Score: N/A</p>
 
+<script>
+const upload = document.getElementById("upload");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>OrthoScore</title>
-  <style>
-    body {
-      font-family: Ariel, sans-serif;
-      text-align: center;
-      background-color: #f5f7fa;
-    }
+let points = [];
 
-    h1 {
-      margin-top: 20px;
-    }
+upload.addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  const img = new Image();
+  img.src = URL.createObjectURL(file);
 
-    #canvas {
-      margin-top: 20px;
-      border: 2px solid #ccc;
-      max-width: 90%;
-    }
+  img.onload = () => {
+    canvas.width = img.width;
+    canvas.height = img.height;
+    ctx.drawImage(img, 0, 0);
+    points = [];
+  };
+});
 
-    .container {
-      margin-top: 20px;
-    }
+canvas.addEventListener("click", (e) => {
+  const x = e.offsetX;
+  const y = e.offsetY;
 
-    #score {
-      font-size: 20px;
-      margin-top: 15px;
-      font-weight: bold;
-    }
-  </style>
-</head>
-<body>
-  <h1>Upload Your Smile</h1>
-  <input type="file" id="upload" />
-  <canvas id="canvas"></canvas>
+  points.push({ x, y });
 
-  <script src="script.js"></script>
-</body>
-</html>
+  ctx.fillStyle = "red";
+  ctx.beginPath();
+  ctx.arc(x, y, 5, 0, Math.PI * 2);
+  ctx.fill();
+
+  if (points.length >= 2) {
+    let avgY = points.reduce((sum, p) => sum + p.y, 0) / points.length;
+    let deviation = points.reduce((sum, p) => sum + Math.abs(p.y - avgY), 0);
+
+    let score = 100 - deviation / points.length;
+    document.getElementById("score").innerText = "Score: " + score.toFixed(1);
+  }
+});
+</script>
