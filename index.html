@@ -21,27 +21,11 @@ upload.addEventListener("change", (e) => {
   currentImage.onload = () => {
     canvas.width = currentImage.width;
     canvas.height = currentImage.height;
-    ctx.drawImage(currentImage, 0, 0);
     points = [];
+    draw(); // draw once
     document.getElementById("score").innerText = "Score: N/A";
   };
 });
-
-function redraw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  if (currentImage) {
-    ctx.drawImage(currentImage, 0, 0);
-  }
-
-  // redraw points
-  for (let p of points) {
-    ctx.fillStyle = "red";
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
-    ctx.fill();
-  }
-}
 
 canvas.addEventListener("click", (e) => {
   const x = e.offsetX;
@@ -49,8 +33,25 @@ canvas.addEventListener("click", (e) => {
 
   points.push({ x, y });
 
-  redraw();
+  draw(); // 👈 EVERYTHING redraws here cleanly
+});
 
+function draw() {
+  if (!currentImage) return;
+
+  // Clear + redraw image
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(currentImage, 0, 0);
+
+  // Draw points
+  for (let p of points) {
+    ctx.fillStyle = "red";
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // Draw curve + score if enough points
   if (points.length >= 3) {
 
     let sorted = [...points].sort((a, b) => a.x - b.x);
@@ -59,26 +60,41 @@ canvas.addEventListener("click", (e) => {
     let right = sorted[sorted.length - 1];
     let mid = sorted[Math.floor(sorted.length / 2)];
 
-    function solveParabola(p1, p2, p3) {
-      let x1 = p1.x, y1 = p1.y;
-      let x2 = p2.x, y2 = p2.y;
-      let x3 = p3.x, y3 = p3.y;
+    let x1 = left.x, y1 = left.y;
+    let x2 = mid.x, y2 = mid.y;
+    let x3 = right.x, y3 = right.y;
 
-      let denom = (x1 - x2)*(x1 - x3)*(x2 - x3);
-      if (denom === 0) return null;
+    let denom = (x1 - x2)*(x1 - x3)*(x2 - x3);
+    if (denom === 0) return;
 
-      let a = (x3*(y2 - y1) + x2*(y1 - y3) + x1*(y3 - y2)) / denom;
-      let b = (x3*x3*(y1 - y2) + x2*x2*(y3 - y1) + x1*x1*(y2 - y3)) / denom;
-      let c = (x2*x3*(x2 - x3)*y1 + x3*x1*(x3 - x1)*y2 + x1*x2*(x1 - x2)*y3) / denom;
+    let a = (x3*(y2 - y1) + x2*(y1 - y3) + x1*(y3 - y2)) / denom;
+    let b = (x3*x3*(y1 - y2) + x2*x2*(y3 - y1) + x1*x1*(y2 - y3)) / denom;
+    let c = (x2*x3*(x2 - x3)*y1 + x3*x1*(x3 - x1)*y2 + x1*x2*(x1 - x2)*y3) / denom;
 
-      return { a, b, c };
+    // Draw curve
+    ctx.strokeStyle = "blue";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+
+    let started = false;
+
+    for (let x = 0; x < canvas.width; x++) {
+      let y = a * x * x + b * x + c;
+
+      // Only draw if on screen
+      if (y >= 0 && y <= canvas.height) {
+        if (!started) {
+          ctx.moveTo(x, y);
+          started = true;
+        } else {
+          ctx.lineTo(x, y);
+        }
+      }
     }
 
-    let curve = solveParabola(left, mid, right);
-    if (!curve) return;
+    ctx.stroke();
 
-    let { a, b, c } = curve;
-
+    // Calculate score
     let totalDeviation = 0;
 
     for (let p of sorted) {
@@ -91,17 +107,6 @@ canvas.addEventListener("click", (e) => {
 
     document.getElementById("score").innerText =
       "Score: " + score.toFixed(1);
-
-    ctx.strokeStyle = "blue";
-    ctx.beginPath();
-
-    for (let x = 0; x < canvas.width; x++) {
-      let y = a * x * x + b * x + c;
-      if (x === 0) ctx.moveTo(x, y);
-      else ctx.lineTo(x, y);
-    }
-
-    ctx.stroke();
   }
-});
+}
 </script>
