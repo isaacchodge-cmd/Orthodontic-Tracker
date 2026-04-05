@@ -3,54 +3,53 @@
 <canvas id="canvas"></canvas>
 <p id="score">Score: N/A</p>
 <p>Click the CENTER of each top tooth.</p>
+
 <script>
 const upload = document.getElementById("upload");
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
 let points = [];
+let currentImage = null;
 
 upload.addEventListener("change", (e) => {
   const file = e.target.files[0];
-  const img = new Image();
-  img.src = URL.createObjectURL(file);
 
-  img.onload = () => {
-    canvas.width = img.width;
-    canvas.height = img.height;
-    ctx.drawImage(img, 0, 0);
+  currentImage = new Image();
+  currentImage.src = URL.createObjectURL(file);
+
+  currentImage.onload = () => {
+    canvas.width = currentImage.width;
+    canvas.height = currentImage.height;
+    ctx.drawImage(currentImage, 0, 0);
     points = [];
+    document.getElementById("score").innerText = "Score: N/A";
   };
 });
+
 function redraw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // redraw image
-  const file = upload.files[0];
-  if (!file) return;
+  if (currentImage) {
+    ctx.drawImage(currentImage, 0, 0);
+  }
 
-  const img = new Image();
-  img.src = URL.createObjectURL(file);
-
-  img.onload = () => {
-    ctx.drawImage(img, 0, 0);
-
-    // redraw points
-    for (let p of points) {
-      ctx.fillStyle = "red";
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
-      ctx.fill();
-    }
-  };
+  // redraw points
+  for (let p of points) {
+    ctx.fillStyle = "red";
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
+    ctx.fill();
+  }
 }
+
 canvas.addEventListener("click", (e) => {
   const x = e.offsetX;
   const y = e.offsetY;
 
   points.push({ x, y });
 
-  redraw(); // 👈 always redraw everything cleanly
+  redraw();
 
   if (points.length >= 3) {
 
@@ -93,7 +92,6 @@ canvas.addEventListener("click", (e) => {
     document.getElementById("score").innerText =
       "Score: " + score.toFixed(1);
 
-    // Draw curve
     ctx.strokeStyle = "blue";
     ctx.beginPath();
 
@@ -104,6 +102,6 @@ canvas.addEventListener("click", (e) => {
     }
 
     ctx.stroke();
- }
+  }
 });
 </script>
