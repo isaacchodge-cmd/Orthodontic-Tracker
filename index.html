@@ -2,7 +2,7 @@
 <input type="file" id="upload">
 <canvas id="canvas"></canvas>
 <p id="score">Score: N/A</p>
-
+<p>Click the CENTER of each top tooth.</p>
 <script>
 const upload = document.getElementById("upload");
 const canvas = document.getElementById("canvas");
@@ -58,7 +58,7 @@ canvas.addEventListener("click", (e) => {
 
     return { a, b, c };
   }
-    <p>Click the CENTER of each top tooth (same height across all teeth)</p>
+
     let curve = solveParabola(left, mid, right);
 
   if (!curve) return;
