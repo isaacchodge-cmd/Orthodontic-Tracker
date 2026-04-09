@@ -92,7 +92,7 @@ function draw() {
     ctx.stroke();
 
     let totalDeviation = 0;
-
+// This is making a quadratic equation using the values of the points given by the user.
     for (let p of sorted) {
       let expectedY = a * p.x * p.x + b * p.x + c;
       totalDeviation += Math.abs(p.y - expectedY);
@@ -101,8 +101,45 @@ function draw() {
     let avgDeviation = totalDeviation / sorted.length;
     let score = Math.max(0, 100 - avgDeviation * 0.5);
 
+    let curveGaps = [];
+
+    for (let i = 0; i < sorted.length - 1; i++) {
+      let x1 = sorted[i].x;
+      let x2 = sorted[i + 1].x;
+// This is essentially giving us a quadratic equation.
+      let y1 = a * x1 * x1 + b * x1 + c;
+      let y2 = a * x2 * x2 + b * x2 + c;
+// This is the distnance formula so we can find the actual distnace between teeth to determine spacing.
+      let dist = Math.sqrt((x2 - x1)**2 + (y2 - y1)**2);
+      curveGaps.push(dist);
+    }
+
+    // This will give us the average space in between each tooth.
+    let avgGap = curveGaps.reduce((sum, g) => sum + g, 0) / curveGaps.length;
+
+    let spacingDeviation = 0;
+
+    for (let i = 0; i < curveGaps.length; i++) {
+      let difference = curveGaps[i] - avgGap;
+
+      if (difference < 0) {
+        difference = -difference;
+      }
+
+      spacingDeviation += difference;
+    }
+
+    spacingDeviation = spacingDeviation / curveGaps.length;
+
+    let spacingScore = Math.max(0, 100 - spacingDeviation * 0.5);
+
+    let alignmentScore = score;
+    let finalScore = alighnmentScore * 0.7 + spacingScore * 0.3;
+
     document.getElementById("score").innerText =
-      "Score: " + score.toFixed(1);
+      "Total: " + finalScore.toFixed(1) +
+      " | Alignment: " + alignmentScore.toFixed(1) +
+      " | Spacing: " + spacingScore.toFixed(1);
   }
 }
 </script>
