@@ -100,7 +100,7 @@ function draw() {
     }
 
     let avgDeviation = totalDeviation / sorted.length;
-    let score = Math.max(0, 100 - avgDeviation * 0.5);
+    let score = Math.max(0, 100 - avgDeviation * 2);
 
     let curveGaps = [];
 
@@ -133,7 +133,7 @@ function draw() {
 
     spacingDeviation = spacingDeviation / curveGaps.length;
 // All of these change the weight of each type of score as they are factored into a overall score.
-    let spacingScore = Math.max(0, 100 - spacingDeviation * 0.5);
+    let spacingScore = Math.max(0, 100 - spacingDeviation * 2);
 
     let alignmentScore = score;
     let finalScore = alignmentScore * 0.7 + spacingScore * 0.3;
