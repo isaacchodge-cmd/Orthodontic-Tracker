@@ -1,3 +1,4 @@
+
 <h1>Orthodontic Progress Tracker</h1>
 <input type="file" id="upload">
 <canvas id="canvas"></canvas>
@@ -8,7 +9,7 @@
 const upload = document.getElementById("upload");
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
-
+  
 let points = [];
 let currentImage = null;
 
@@ -22,7 +23,7 @@ upload.addEventListener("change", (e) => {
     canvas.width = currentImage.width;
     canvas.height = currentImage.height;
     points = [];
-    draw(); // draw once
+    draw();
     document.getElementById("score").innerText = "Score: N/A";
   };
 });
@@ -39,7 +40,7 @@ canvas.addEventListener("click", (e) => {
 function draw() {
   if (!currentImage) return;
 
-  // Clear and redraw image to clear up any mess with multiple lines.
+  // This clears and redraws the image to clear up any mess with multiple lines.
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(currentImage, 0, 0);
 
@@ -119,7 +120,7 @@ function draw() {
     let avgGap = curveGaps.reduce((sum, g) => sum + g, 0) / curveGaps.length;
 
     let spacingDeviation = 0;
-
+// The score is determined by finding out how far away each individual space is from the average space.
     for (let i = 0; i < curveGaps.length; i++) {
       let difference = curveGaps[i] - avgGap;
 
@@ -131,12 +132,12 @@ function draw() {
     }
 
     spacingDeviation = spacingDeviation / curveGaps.length;
-
+// All of these change the weight of each type of score as they are factored into a overall score.
     let spacingScore = Math.max(0, 100 - spacingDeviation * 0.5);
 
     let alignmentScore = score;
     let finalScore = alignmentScore * 0.7 + spacingScore * 0.3;
-
+// This displays all the different scores under the image of the smile.
     document.getElementById("score").innerText =
       "Total: " + finalScore.toFixed(1) +
       " | Alignment: " + alignmentScore.toFixed(1) +
