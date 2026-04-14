@@ -133,7 +133,7 @@ function draw() {
 
     spacingDeviation = spacingDeviation / curveGaps.length;
 // All of these change the weight of each type of score as they are factored into a overall score.
-    let spacingScore = Math.max(0, 100 - spacingDeviation * 2);
+    let spacingScore = Math.max(0, 100 - spacingDeviation * 1.2);
 
     let alignmentScore = score;
     let finalScore = alignmentScore * 0.7 + spacingScore * 0.3;
