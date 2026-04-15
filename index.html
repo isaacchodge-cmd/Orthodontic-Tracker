@@ -6,6 +6,8 @@
 <p>Click the <b>CENTER</b> of each top tooth.</p>
 
 <script>
+let history = [];
+  
 const upload = document.getElementById("upload");
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
@@ -137,6 +139,12 @@ function draw() {
 
     let alignmentScore = score;
     let finalScore = alignmentScore * 0.7 + spacingScore * 0.3;
+
+    history.push({
+      time: Date.now(),
+      score: finalScore
+    });
+    
 // This displays all the different scores under the image of the smile.
     document.getElementById("score").innerText =
       "Total: " + finalScore.toFixed(1) +
