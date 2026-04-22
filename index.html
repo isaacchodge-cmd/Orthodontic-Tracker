@@ -2,9 +2,11 @@
 <h1>Orthodontic Progress Tracker</h1>
 <input type="file" id="upload">
 <canvas id="canvas"></canvas>
+<canvas id="progressChart" width="400" height="200"></canvas>
 <p id="score">Score: N/A</p>
 <p>Click the <b>CENTER</b> of each top tooth.</p>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 let history = [];
 const upload = document.getElementById("upload");
@@ -45,6 +47,8 @@ canvas.addEventListener("click", (e) => {
   points.push({ x, y });
 
   draw();
+
+  function updateGraph
 });
 
 function draw() {
