@@ -47,13 +47,22 @@ canvas.addEventListener("click", (e) => {
 
   draw();
 
-  function updateGraph() {
-    const graphCtx = documentgetElementById('progressChart').getContext('2d');
+  history.push({
+    time: Date.now(),
+    score: finalScore
+  });
+
+  updateGraph();
+});
+
+  function draw() {
+    function updateGraph() {
+    const graphCtx = document.getElementById('progressChart').getContext('2d');
 
     let labels = [];
     let dataPoints = [];
 
-    for (let i = 0; history.length, i++) {
+    for (let i = 0; history.length; i++) {
       let entry = history[i];
 
       let date = new Date(entry.time);
@@ -71,7 +80,7 @@ canvas.addEventListener("click", (e) => {
       window.myChart.destroy();
     }
 
-    window.myChart = new Chart(chartCtx, {
+    window.myChart = new Chart(graphCtx, {
       type: 'line',
       data: {
         labels: labels,
@@ -92,8 +101,6 @@ canvas.addEventListener("click", (e) => {
       }
     });
   }
-  
-});
 
 function draw() {
   if (!currentImage) return;
