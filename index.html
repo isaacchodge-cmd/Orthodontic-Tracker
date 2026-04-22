@@ -47,62 +47,11 @@ canvas.addEventListener("click", (e) => {
 
   draw();
 
-  history.push({
-    time: Date.now(),
-    score: finalScore
-  });
-
-  updateGraph();
 });
 
   function draw() {
-    function updateGraph() {
-    const graphCtx = document.getElementById('progressChart').getContext('2d');
+    
 
-    let labels = [];
-    let dataPoints = [];
-
-    for (let i = 0; i < history.length; i++) {
-      let entry = history[i];
-
-      let date = new Date(entry.time);
-
-      let label = date.toLocaleDateString(undefined, {
-        month: 'short',
-        day: 'numeric'
-      });
-
-      labels.push(label);
-      dataPoints.push(entry.score);
-    }
-
-    if (window.myChart) {
-      window.myChart.destroy();
-    }
-
-    window.myChart = new Chart(graphCtx, {
-      type: 'line',
-      data: {
-        labels: labels,
-        datasets: [{
-          label: 'Alignment Score',
-          data: dataPoints,
-          borderWidth: 2,
-          tension: 0.2
-        }]
-      },
-      options: {
-        scales: {
-          y: {
-            min: 0,
-            max: 100
-          }
-        }
-      }
-    });
-  }
-
-function draw() {
   if (!currentImage) return;
 
   // This clears and redraws the image to clear up any mess with multiple lines.
@@ -202,6 +151,15 @@ function draw() {
 
     let alignmentScore = score;
     let finalScore = alignmentScore * 0.7 + spacingScore * 0.3;
+
+   if (!isNaN(finalScore)) {
+    history.push({
+       time: Date.now(),
+       score: finalScore
+     });
+
+  updateGraph();
+   }
     
 // This displays all the different scores under the image of the smile.
     document.getElementById("score").innerText =
@@ -211,4 +169,45 @@ function draw() {
 
   }
 }
+
+let chart = null;
+
+function updateGraph() {
+  const graphCtx = document.getElementById('progressChart').getContext('2d');
+
+  const labels = history.map(entry =>
+    new Date(entry.time).toLocaleDateString(undefined, {
+      month: 'short',
+      day: 'numeric'
+    })
+  );
+
+  const dataPoints = history.map(entry => entry.score);
+
+  if (chart) {
+    chart.data.labels = labels;
+    chart.data.datasets[0].data = dataPoints;
+    chart.update();
+    return;
+  }
+
+  chart = new Chart(graphCtx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Alignment Score',
+        data: dataPoints,
+        borderWidth: 2,
+        tension: 0.2
+      }]
+    },
+    options: {
+      scales: {
+        y: { min: 0, max: 100 }
+      }
+    }
+  });
+}
+  
 </script>
