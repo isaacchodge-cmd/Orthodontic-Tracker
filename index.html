@@ -62,7 +62,7 @@ canvas.addEventListener("click", (e) => {
     let labels = [];
     let dataPoints = [];
 
-    for (let i = 0; history.length; i++) {
+    for (let i = 0; i < history.length; i++) {
       let entry = history[i];
 
       let date = new Date(entry.time);
