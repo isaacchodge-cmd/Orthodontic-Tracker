@@ -47,6 +47,51 @@ canvas.addEventListener("click", (e) => {
 
   draw();
 
+  function updateGraph() {
+    const graphCtx = documentgetElementById('progressChart').getContext('2d');
+
+    let labels = [];
+    let dataPoints = [];
+
+    for (let i = 0; history.length, i++) {
+      let entry = history[i];
+
+      let date = new Date(entry.time);
+
+      let label = date.toLocaleDateString(undefined, {
+        month: 'short',
+        day: 'numeric'
+      });
+
+      labels.push(label);
+      dataPoints.push(entry.score);
+    }
+
+    if (window.myChart) {
+      window.myChart.destroy();
+    }
+
+    window.myChart = new Chart(chartCtx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Alignment Score',
+          data: dataPoints,
+          borderWidth: 2,
+          tension: 0.2
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            min: 0,
+            max: 100
+          }
+        }
+      }
+    });
+  }
   
 });
 
@@ -155,6 +200,8 @@ function draw() {
       time: Date.now(),
       score: finalScore
     });
+
+    updateGraph();
     
 // This displays all the different scores under the image of the smile.
     document.getElementById("score").innerText =
