@@ -202,13 +202,6 @@ function draw() {
 
     let alignmentScore = score;
     let finalScore = alignmentScore * 0.7 + spacingScore * 0.3;
-
-    history.push({
-      time: Date.now(),
-      score: finalScore
-    });
-
-    updateGraph();
     
 // This displays all the different scores under the image of the smile.
     document.getElementById("score").innerText =
