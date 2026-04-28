@@ -175,14 +175,6 @@ canvas.addEventListener("click", (e) => {
     let alignmentScore = score;
     let finalScore = alignmentScore * 0.7 + spacingScore * 0.3;
 
-   if (!isNaN(finalScore)) {
-    history.push({
-       time: Date.now(),
-       score: finalScore
-     });
-
-  updateGraph();
-   }
     
 // This displays all the different scores under the image of the smile.
     document.getElementById("score").innerText =
