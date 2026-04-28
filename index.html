@@ -10,6 +10,10 @@
 }
 </style>
 <p id="score">Score: N/A</p>
+
+<button id="saveBtn">Save Progress</button>
+<button id="undoBtn">Undo Last Point</button>
+
 <p>Click the <b>CENTER</b> of each top tooth.</p>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -75,7 +79,7 @@ canvas.addEventListener("click", (e) => {
 
   // This clears and redraws the image to clear up any mess with multiple lines.
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.drawImage(currentImage, 0, 0);
+  ctx.drawImage(currentImage, 0, 0, canvas.width, canvas.height);
 
   // Draws points
   for (let p of points) {
