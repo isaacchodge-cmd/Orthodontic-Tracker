@@ -30,8 +30,20 @@ upload.addEventListener("change", (e) => {
   const url = URL.createObjectURL(file);
 
   img.onload = () => {
-    canvas.width = img.width;
-    canvas.height = img.height;
+
+    let maxWidth = 500;
+    let maxHeight = 300;
+
+    let width = img.width;
+    let height = img.height;
+
+    let scale = Math.min(maxWidth / width, maxHeight / height);
+    if (scale > 1) {
+      scale = 1;
+    }
+    
+    canvas.width = width * scale;
+    canvas.height = height * scale;
 
     currentImage = img;
     points = [];
