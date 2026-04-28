@@ -19,6 +19,10 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 let history = [];
+let savedHistory = localStorage.getItem("history");
+if (savedHistory) {
+  history = JSON.parse(savedHistory);
+}
 const upload = document.getElementById("upload");
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
@@ -175,6 +179,8 @@ canvas.addEventListener("click", (e) => {
     let alignmentScore = score;
     let finalScore = alignmentScore * 0.7 + spacingScore * 0.3;
 
+    latestScore = finalScore;
+
     
 // This displays all the different scores under the image of the smile.
     document.getElementById("score").innerText =
@@ -226,5 +232,28 @@ function updateGraph() {
     }
   });
 }
+
+  document.getElementById("saveBtn").addEventListener("click", () => {
+
+    if (latestScore === null || isNaN(latestScore)) {
+      return;
+    }
+
+    history.push({
+      time: Date.now(),
+      score: latestScore
+    });
+
+    localStorage.setItem("history", JSON.stringify(history));
+
+    updateGraph();
+  });
+
+  document.getElementById("undoBtn").addEventListener("click", () => {
+    points.pop();
+    draw();
+  });
+
+  updateGraph();
   
 </script>
